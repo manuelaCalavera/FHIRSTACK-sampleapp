@@ -2,7 +2,9 @@ package manny.fhirstack_sampleapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +12,10 @@ import android.widget.Toast;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
+import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
 import ca.uhn.fhir.parser.IParser;
+import fhirstack.Questionnaire2Task;
+import fhirstack.QuestionnaireActivity;
 import sampledata.SampleData;
 
 //survey stuff
@@ -18,14 +23,17 @@ import org.researchstack.backbone.StorageAccess;
 
 import org.researchstack.backbone.result.StepResult;
 import org.researchstack.backbone.result.TaskResult;
-import org.researchstack.backbone.ui.PinCodeActivity;
-import org.researchstack.backbone.ui.ViewTaskActivity;
+import org.researchstack.backbone.task.Task;
 
 
-public class MainActivity extends PinCodeActivity {
+public class MainActivity extends AppCompatActivity {
 
     // Activity Request Codes
     private static final int REQUEST_SURVEY = 1;
+    private static final int TEXTVALUES_SURVEY = 2;
+    private static final int CHOICES_SURVEY = 3;
+    private static final int DATES_SURVEY = 4;
+
 
     //survey stuff task/step identifiers
     public static final String INSTRUCTION = "identifier";
@@ -43,33 +51,44 @@ public class MainActivity extends PinCodeActivity {
     public static final String FORM_DATE_OF_BIRTH = "date_of_birth";
 
     //views
-    private AppCompatButton surveyButton;
+    private AppCompatButton survey1Button;
+    private AppCompatButton survey2Button;
+    private AppCompatButton survey3Button;
     private AppCompatButton clearButton;
-    private boolean hasSurveyed = false;
+    private AppCompatTextView resultView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FhirContext ctxDstu2 = FhirContext.forDstu2();
-        Log.d("FHIR", "context created!");
-
-        IParser parser = ctxDstu2.newXmlParser();
-
-        String sampleString = SampleData.getPatientString();
-
-        Patient patient = parser.parseResource(Patient.class, sampleString);
-
-        ((TextView) findViewById(R.id.displayText)).setText(patient.getName().get(0).getFamily().get(0).getValue());
-
-        surveyButton = (AppCompatButton) findViewById(R.id.survey_button);
-        surveyButton.setOnClickListener(new View.OnClickListener() {
+        survey1Button = (AppCompatButton) findViewById(R.id.survey1_button);
+        survey1Button.setText("questionnaire text values");
+        survey1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSurvey();
+                launchSurvey(R.raw.questionnaire_textvalues, TEXTVALUES_SURVEY);
             }
         });
+
+        survey2Button = (AppCompatButton) findViewById(R.id.survey2_button);
+        survey2Button.setText("questionnaire choices");
+        survey2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSurvey(R.raw.questionnaire_choices, CHOICES_SURVEY);
+            }
+        });
+
+        survey3Button = (AppCompatButton) findViewById(R.id.survey3_button);
+        survey3Button.setText("questionnaire dates");
+        survey3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSurvey(R.raw.questionnaire_dates, DATES_SURVEY);
+            }
+        });
+
         clearButton = (AppCompatButton) findViewById(R.id.clear_button);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,86 +98,55 @@ public class MainActivity extends PinCodeActivity {
             }
         });
 
+        resultView = (AppCompatTextView) findViewById(R.id.result_textView);
+        resultView.setText("Welcome");
     }
 
-
-    // setup stuff
-
-
-    private void clearData() {
-        hasSurveyed = false;
-        initViews();
-    }
-
-    /*
-        @Override
-        public void onDataReady()
-        {
-            super.onDataReady();
-            initViews();
-        }
-    */
-    private void initViews() {
-
-        TextView surveyAnswer = (TextView) findViewById(R.id.survey_results);
-
-        if (hasSurveyed) {
-            surveyAnswer.setVisibility(View.VISIBLE);
-            printSurveyInfo(surveyAnswer);
-        } else {
-            surveyAnswer.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_SURVEY && resultCode == RESULT_OK) {
-            processSurveyResult((TaskResult) data.getSerializableExtra(ViewTaskActivity.EXTRA_TASK_RESULT));
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case TEXTVALUES_SURVEY:
+                    resultView.setText("Textvalue Survey done");
+                case CHOICES_SURVEY:
+                    resultView.setText("Choices Survey done");
+                case DATES_SURVEY:
+                    resultView.setText("Dates Survey done");
+                case REQUEST_SURVEY:
+            }
         }
     }
 
 
-    // Survey Stuff
-
     private void launchSurvey() {
-
-
         // Create an activity using the task and set a delegate.
-        Intent intent = ViewTaskActivity.newIntent(this, SampleData.getTask());
-        //Intent intent = QuestionnaireActivity.newIntent(this, SampleData.getTask());
+        //Intent intent = ViewTaskActivity.newIntent(this, SampleData.getTask());
+        Intent intent = QuestionnaireActivity.newIntent(this, SampleData.getTask());
         startActivityForResult(intent, REQUEST_SURVEY);
     }
 
-    private void processSurveyResult(TaskResult result) {
-        StorageAccess.getInstance().getAppDatabase().saveTaskResult(result);
+    private void launchSurvey(int rawID, int requestID) {
+        FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
 
-        Log.d("processSurveyResult", "setting hasSurveyed to true");
-        Log.d("processSurveyResult", result.toString());
+        Questionnaire q = SampleData.getQquestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
 
-        hasSurveyed = true;
-        initViews();
+        Task task = Questionnaire2Task.questionnaire2Task(q);
+
+        Intent intent = QuestionnaireActivity.newIntent(this, task);
+        startActivityForResult(intent, requestID);
     }
 
-    private void printSurveyInfo(TextView surveyAnswer) {
-
-        Log.d("printSurveyInfo", "hassurveyed is " + hasSurveyed);
-        TaskResult taskResult = StorageAccess.getInstance()
-                .getAppDatabase()
-                .loadLatestTaskResult(SAMPLE_SURVEY);
-
+    private void printQuestionnaireAnswers() {
         String results = "";
-        if (taskResult != null) {
-            for (String id : taskResult.getResults().keySet()) {
-                StepResult stepResult = taskResult.getStepResult(id);
-                if (stepResult.getResult() != null) {
-                    results += id + ": " + stepResult.getResult().toString() + "\n";
-                }
-            }
-        }
-        surveyAnswer.setText(results);
+        //TODO get questionnaire answers
+        resultView.setText(results);
     }
 
+    private void clearData() {
+        resultView.setText("");
+    }
 
 }

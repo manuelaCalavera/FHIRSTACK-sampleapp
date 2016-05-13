@@ -1,6 +1,7 @@
 package manny.fhirstack_sampleapp;
 
 import android.app.Application;
+import android.util.Log;
 
 import org.researchstack.backbone.StorageAccess;
 import org.researchstack.backbone.storage.database.AppDatabase;
@@ -11,10 +12,13 @@ import org.researchstack.backbone.storage.file.PinCodeConfig;
 import org.researchstack.backbone.storage.file.SimpleFileAccess;
 import org.researchstack.backbone.storage.file.UnencryptedProvider;
 
+import ca.uhn.fhir.context.FhirContext;
+
 /**
  * Created by manny on 28.04.2016.
  */
 public class FHIRStackApplication extends Application {
+    private FhirContext fhirContext;
     @Override
     public void onCreate()
     {
@@ -36,5 +40,15 @@ public class FHIRStackApplication extends Application {
                 DatabaseHelper.DEFAULT_VERSION);
 
         StorageAccess.getInstance().init(pinCodeConfig, encryptionProvider, fileAccess, database);
+
+
+
+        //FHIR context
+        this.fhirContext = FhirContext.forDstu2();
+        Log.d("FHIR", "context created!");
+    }
+
+    public FhirContext getFhirContext(){
+        return this.fhirContext;
     }
 }

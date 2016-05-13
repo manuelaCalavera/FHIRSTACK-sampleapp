@@ -1,5 +1,12 @@
 package sampledata;
 
+import android.content.res.Resources;
+import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.google.common.io.Files;
+
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
 import org.researchstack.backbone.answerformat.ChoiceAnswerFormat;
@@ -11,12 +18,28 @@ import org.researchstack.backbone.step.QuestionStep;
 import org.researchstack.backbone.task.OrderedTask;
 import org.researchstack.backbone.task.Task;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.resource.CarePlan;
+import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
+import ca.uhn.fhir.parser.IParser;
+import manny.fhirstack_sampleapp.FHIRStackApplication;
 import manny.fhirstack_sampleapp.R;
 
 /**
  * Created by manny on 19.04.2016.
  */
-public class SampleData {
+public class SampleData extends AppCompatActivity {
     //survey stuff task/step identifiers
     public static final String INSTRUCTION = "identifier";
     public static final String NAME = "name";
@@ -33,8 +56,7 @@ public class SampleData {
     public static final String FORM_DATE_OF_BIRTH = "date_of_birth";
 
 
-
-    public static String getPatientString(){
+    public static String getPatientString() {
         return "<Patient xmlns=\"http://hl7.org/fhir\">"
                 + "<text><status value=\"generated\" /><div xmlns=\"http://www.w3.org/1999/xhtml\">John Cardinal</div></text>"
                 + "<identifier><system value=\"http://orionhealth.com/mrn\" /><value value=\"PRP1660\" /></identifier>"
@@ -45,7 +67,7 @@ public class SampleData {
     }
 
 
-    public static Task getTask(){
+    public static Task getTask() {
         InstructionStep instructionStep = new InstructionStep(INSTRUCTION,
                 "Selection Survey",
                 "This survey can help us understand your eligibility for the fitness study");
@@ -85,6 +107,84 @@ public class SampleData {
                 booleanStep, multiStep);
 
         return task;
+    }
+
+    public static Questionnaire getQquestionnaireFromJson(FhirContext fhirContext, Resources res, int rawID) {
+
+
+        IParser parser = fhirContext.newJsonParser();
+
+        String json =getJasonAsString(res, rawID);
+
+        Questionnaire questionnaire = parser.parseResource(Questionnaire.class, json);
+
+        return questionnaire;
+
+    }
+
+    public static String getJasonAsString(Resources res, int rawID){
+
+        //InputStream is = res.openRawResource(R.raw.questionnaire_textvalues);
+        InputStream is = res.openRawResource(rawID);
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return writer.toString();
+    }
+
+
+    public static String readFile(String path) {
+        File file = new File(path);
+        String content = "";
+        try {
+
+            content = getFileContents(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("readFile", content);
+        return content;
+    }
+
+    public static String getFileContents(final File file) throws IOException {
+        final InputStream inputStream = new FileInputStream(file);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        boolean done = false;
+
+        while (!done) {
+            final String line = reader.readLine();
+            done = (line == null);
+
+            if (line != null) {
+                stringBuilder.append(line);
+            }
+        }
+
+        reader.close();
+        inputStream.close();
+
+        return stringBuilder.toString();
     }
 
         /*

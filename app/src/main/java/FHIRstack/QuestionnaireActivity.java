@@ -1,15 +1,22 @@
 package fhirstack;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import org.researchstack.backbone.task.Task;
 import org.researchstack.backbone.ui.ViewTaskActivity;
 
+import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
+import sampledata.SampleData;
 
 
 /**
  * Created by manny on 28.04.2016.
  */
 public class QuestionnaireActivity extends ViewTaskActivity {
-/*
+
     public static Intent newIntent(Context context, Task task)
     {
         Intent intent = new Intent(context, QuestionnaireActivity.class);
@@ -33,5 +40,5 @@ public class QuestionnaireActivity extends ViewTaskActivity {
         Log.d("YAY","it's happening!!");
         super.finish();
     }
-    */
+
 }
