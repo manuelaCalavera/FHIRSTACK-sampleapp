@@ -7,22 +7,14 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.Patient;
-import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
-import ca.uhn.fhir.parser.IParser;
+
 import fhirstack.Questionnaire2Task;
 import fhirstack.QuestionnaireActivity;
 import sampledata.SampleData;
 
-//survey stuff
-import org.researchstack.backbone.StorageAccess;
-
-import org.researchstack.backbone.result.StepResult;
-import org.researchstack.backbone.result.TaskResult;
+import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.researchstack.backbone.task.Task;
 
 

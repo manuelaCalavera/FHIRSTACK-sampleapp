@@ -8,7 +8,7 @@ import android.util.Log;
 import org.researchstack.backbone.task.Task;
 import org.researchstack.backbone.ui.ViewTaskActivity;
 
-import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
+import org.hl7.fhir.dstu3.model.Questionnaire;
 import sampledata.SampleData;
 
 

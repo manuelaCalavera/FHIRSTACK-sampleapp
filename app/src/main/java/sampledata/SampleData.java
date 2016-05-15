@@ -1,11 +1,8 @@
 package sampledata;
 
 import android.content.res.Resources;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import com.google.common.io.Files;
 
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
@@ -30,10 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.CarePlan;
-import ca.uhn.fhir.model.dstu2.resource.Questionnaire;
+import org.hl7.fhir.dstu3.model.Questionnaire;
 import ca.uhn.fhir.parser.IParser;
-import manny.fhirstack_sampleapp.FHIRStackApplication;
 import manny.fhirstack_sampleapp.R;
 
 /**
