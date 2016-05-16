@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int TEXTVALUES_SURVEY = 2;
     private static final int CHOICES_SURVEY = 3;
     private static final int DATES_SURVEY = 4;
+    private static final int VALUESETCONTAINED_SURVEY = 5;
+    private static final int VALUESETRELATIVE_SURVEY = 4;
+
 
 
     //survey stuff task/step identifiers
@@ -63,21 +65,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        survey2Button = (AppCompatButton) findViewById(R.id.survey2_button);
-        survey2Button.setText("questionnaire choices");
-        survey2Button.setOnClickListener(new View.OnClickListener() {
+        survey1Button = (AppCompatButton) findViewById(R.id.survey2_button);
+        survey1Button.setText("questionnaire choices");
+        survey1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchSurvey(R.raw.questionnaire_choices, CHOICES_SURVEY);
             }
         });
 
-        survey3Button = (AppCompatButton) findViewById(R.id.survey3_button);
-        survey3Button.setText("questionnaire dates");
-        survey3Button.setOnClickListener(new View.OnClickListener() {
+        survey1Button = (AppCompatButton) findViewById(R.id.survey3_button);
+        survey1Button.setText("questionnaire dates");
+        survey1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchSurvey(R.raw.questionnaire_dates, DATES_SURVEY);
+            }
+        });
+
+        survey2Button = (AppCompatButton) findViewById(R.id.survey4_button);
+        survey2Button.setText("questionnaire valueset contained");
+        survey2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSurvey(R.raw.questionnaire_valueset_contained, VALUESETCONTAINED_SURVEY);
+            }
+        });
+
+        survey3Button = (AppCompatButton) findViewById(R.id.survey5_button);
+        survey3Button.setText("questionnaire valueset relative");
+        survey3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSurvey(R.raw.questionnaire_valueset_realative, VALUESETRELATIVE_SURVEY);
             }
         });
 
@@ -108,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
                 case DATES_SURVEY:
                     resultView.setText("Dates Survey done");
                 case REQUEST_SURVEY:
+                default:
+                    resultView.setText("Survey done");
             }
         }
     }

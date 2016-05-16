@@ -3,7 +3,6 @@ package manny.fhirstack_sampleapp;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
-import android.util.Log;
 
 import org.researchstack.backbone.StorageAccess;
 import org.researchstack.backbone.storage.database.AppDatabase;
@@ -55,7 +54,6 @@ public class FHIRStackApplication extends Application {
 
         //FHIR context
         this.fhirContext = FhirContext.forDstu3();
-        Log.d("FHIR", "context created!");
     }
 
     public FhirContext getFhirContext(){

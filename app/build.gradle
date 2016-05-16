@@ -31,9 +31,6 @@ dependencies {
     compile 'org.researchstack:backbone:1.0.0.rc3'
     compile 'org.researchstack:skin:1.0.0.rc3'
     compile 'com.android.support:multidex:1.0.1'
-}
-
-dependencies {
     compile (group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.5', classifier: 'dstu3') {
         exclude module: 'javax.servlet-api'
         exclude module: 'hapi-fhir-base'

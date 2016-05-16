@@ -246,24 +246,23 @@ public class Item2Step {
         else if (reference.getResource() != null) {
             ValueSet vSet = (ValueSet) reference.getResource();
 
-            /*
-            * if the options are in the code system as concept
-            * */
-
-            //TODO codesystem???
-            /* not reimplemented yet
-            List<ValueSet.CodeSystemConcept> conceptList = vSet.getCodeSystem().getConcept();
-            if (!conceptList.isEmpty()) {
+            // this happens with included options
+            List<ValueSet.ConceptSetComponent> includes = vSet.getCompose().getInclude();
+            if (!includes.isEmpty()) {
                 List<Choice> choiceList = new ArrayList<Choice>();
-                for (ValueSet.CodeSystemConcept concept : conceptList) {
-                    String text = concept.getDisplay();
-                    String code = concept.getCode();
-                    choiceList.add(new Choice(text, code));
+                for (ValueSet.ConceptSetComponent include : includes) {
+                    List<ValueSet.ConceptReferenceComponent> concepts = include.getConcept();
+                    for (ValueSet.ConceptReferenceComponent concept : concepts) {
+                        String text = concept.getDisplay();
+                        String code = concept.getCode();
+                        choiceList.add(new Choice(text, code));
+                    }
                 }
                 return choiceList.toArray(new Choice[choiceList.size()]);
-            }*/
+            }
 
 
+            // does this happen at all?
             List<ValueSet.ValueSetExpansionContainsComponent> expansion = vSet.getExpansion().getContains();
             if (!expansion.isEmpty()) {
                 List<Choice> choiceList = new ArrayList<Choice>();
@@ -282,35 +281,6 @@ public class Item2Step {
                     String text = contain.getDisplay();
                     String code = contain.getCode();
                     choiceList.add(new Choice(text, code));
-                }
-                return choiceList.toArray(new Choice[choiceList.size()]);
-            }*/
-
-
-            List<ValueSet.ConceptSetComponent> includes = vSet.getCompose().getInclude();
-            if (!includes.isEmpty()) {
-                List<Choice> choiceList = new ArrayList<Choice>();
-                for (ValueSet.ConceptSetComponent include : includes) {
-                    List<ValueSet.ConceptReferenceComponent> concepts = include.getConcept();
-                    for (ValueSet.ConceptReferenceComponent concept : concepts) {
-                        String text = concept.getDisplay();
-                        String code = concept.getCode();
-                        choiceList.add(new Choice(text, code));
-                    }
-                }
-                return choiceList.toArray(new Choice[choiceList.size()]);
-            }
-            /* old version
-            List<ValueSet.ComposeInclude> includes = vSet.getCompose().getInclude();
-            if(!includes.isEmpty()){
-                List<Choice> choiceList = new ArrayList<Choice>();
-                for (ValueSet.ComposeInclude include : includes){
-                    List<ValueSet.ComposeIncludeConcept> concepts = include.getConcept();
-                    for (ValueSet.ComposeIncludeConcept concept : concepts){
-                        String text = concept.getDisplay();
-                        String code = concept.getCode();
-                        choiceList.add(new Choice(text, code));
-                    }
                 }
                 return choiceList.toArray(new Choice[choiceList.size()]);
             }*/

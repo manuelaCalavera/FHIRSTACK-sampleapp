@@ -26,6 +26,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="survey3" />
+    <android.support.v7.widget.AppCompatButton android:id="@+id/survey4_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="survey4" />
+    <android.support.v7.widget.AppCompatButton android:id="@+id/survey5_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="survey5" />
     <android.support.v7.widget.AppCompatTextView android:id="@+id/result_textView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

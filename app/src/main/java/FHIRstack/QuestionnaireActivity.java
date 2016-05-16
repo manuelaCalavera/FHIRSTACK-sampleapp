@@ -37,7 +37,6 @@ public class QuestionnaireActivity extends ViewTaskActivity {
     {
 
         //TODO add QuestionnaireResult to intent here //
-        Log.d("YAY","it's happening!!");
         super.finish();
     }
 
