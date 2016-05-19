@@ -147,9 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         Questionnaire q = SampleData.getQquestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
 
-        Task task = Questionnaire2Task.questionnaire2Task(q);
-
-        Intent intent = QuestionnaireActivity.newIntent(this, task);
+        Intent intent = QuestionnaireActivity.newIntent(this, q);
         startActivityForResult(intent, requestID);
     }
 

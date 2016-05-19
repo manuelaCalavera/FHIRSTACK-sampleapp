@@ -2,7 +2,6 @@ package fhirstack;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.researchstack.backbone.step.Step;
-import org.researchstack.backbone.task.OrderedTask;
 import org.researchstack.backbone.task.Task;
 
 
@@ -23,12 +22,8 @@ public class Questionnaire2Task {
 
         List<Step> steps = Items2Steps.items2Steps(items);
 
-        return new OrderedTask(identifier, steps) {
+        return new ConditionalOrderedTask(identifier, steps) {
         };
-
-
-
-
     }
 
 

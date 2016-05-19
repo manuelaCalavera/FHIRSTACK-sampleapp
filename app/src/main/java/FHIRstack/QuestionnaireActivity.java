@@ -26,10 +26,7 @@ public class QuestionnaireActivity extends ViewTaskActivity {
 
     public static Intent newIntent(Context context, Questionnaire questionnaire)
     {
-
-        //TODO create task from Questionnaire here //
-
-        return ViewTaskActivity.newIntent(context, SampleData.getTask());
+        return newIntent(context, Questionnaire2Task.questionnaire2Task(questionnaire));
     }
 
     @Override
