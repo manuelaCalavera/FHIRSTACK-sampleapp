@@ -10,11 +10,11 @@ import android.widget.Toast;
 
 
 import fhirstack.Questionnaire2Task;
-import fhirstack.QuestionnaireActivity;
 import sampledata.SampleData;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.researchstack.backbone.task.Task;
+import org.researchstack.backbone.ui.ViewTaskActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int DATES_SURVEY = 4;
     private static final int VALUESETCONTAINED_SURVEY = 5;
     private static final int VALUESETRELATIVE_SURVEY = 4;
-
 
 
     //survey stuff task/step identifiers
@@ -134,20 +133,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void launchSurvey() {
-        // Create an activity using the task and set a delegate.
-        //Intent intent = ViewTaskActivity.newIntent(this, SampleData.getTask());
-        Intent intent = QuestionnaireActivity.newIntent(this, SampleData.getTask());
-        startActivityForResult(intent, REQUEST_SURVEY);
-    }
-
     private void launchSurvey(int rawID, int requestID) {
         FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
 
-        Questionnaire q = SampleData.getQquestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
+        Questionnaire questionnaire = SampleData.getQquestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
 
-        Intent intent = QuestionnaireActivity.newIntent(this, q);
+        /*
+        * This is how you launch a VieTaskActivity (must be declared in AndroidManifest!) from a FHIR Questionnaire
+        * */
+        Task task = Questionnaire2Task.questionnaire2Task(questionnaire);
+        Intent intent = ViewTaskActivity.newIntent(this, task);
         startActivityForResult(intent, requestID);
     }
 
