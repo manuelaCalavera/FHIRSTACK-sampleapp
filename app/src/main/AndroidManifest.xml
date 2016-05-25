@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Backbone">
 
+
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +21,7 @@
         </activity>
 
         <activity
-            android:name="fhirstack.QuestionnaireActivity"
+            android:name="org.researchstack.backbone.ui.ViewTaskActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Base.Theme.Backbone" />
     </application>
