@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void launchSurvey(int rawID, int requestID) {
         FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
 
-        Questionnaire questionnaire = SampleData.getQquestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
+        Questionnaire questionnaire = SampleData.getQuestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
 
         /*
         * This is how you launch a ViewTaskActivity (must be declared in AndroidManifest!) from a FHIR Questionnaire

@@ -59,7 +59,7 @@ public class TaskResult2QuestionnaireResponse {
         } else if (stepResult.getAnswerFormat() instanceof IntegerAnswerFormat) {
             answerComponent.setValue(new IntegerType((int) stepResult.getResult()));
         } else if (stepResult.getAnswerFormat() instanceof DateAnswerFormat) {
-            answerComponent.setValue(new DateType((Date) stepResult.getResult()));
+            answerComponent.setValue(new DateType(new Date((long)stepResult.getResult())));
         } else if (stepResult.getAnswerFormat() instanceof TextAnswerFormat) {
             answerComponent.setValue(new StringType((String) stepResult.getResult()));
         } else if (stepResult.getAnswerFormat() instanceof ChoiceAnswerFormat) {

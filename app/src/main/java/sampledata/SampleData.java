@@ -25,23 +25,8 @@ import ca.uhn.fhir.parser.IParser;
  * Created by manny on 19.04.2016.
  */
 public class SampleData extends AppCompatActivity {
-    //survey stuff task/step identifiers
-    public static final String INSTRUCTION = "identifier";
-    public static final String NAME = "name";
-    public static final String DATE = "date";
-    public static final String NUTRITION = "nutrition";
-    public static final String MULTI_STEP = "multi_step";
-    public static final String SAMPLE_SURVEY = "sample_survey";
-    public static final String FORM_STEP = "form_step";
-    public static final String BASIC_INFO_HEADER = "basic_info_header";
-    private static final String FORM_NAME = "form_name";
-    public static final String FORM_AGE = "form_age";
-    public static final String FORM_GENDER = "gender";
-    public static final String FORM_MULTI_CHOICE = "multi_choice";
-    public static final String FORM_DATE_OF_BIRTH = "date_of_birth";
 
-
-    public static Questionnaire getQquestionnaireFromJson(FhirContext fhirContext, Resources res, int rawID) {
+    public static Questionnaire getQuestionnaireFromJson(FhirContext fhirContext, Resources res, int rawID) {
 
 
         IParser parser = fhirContext.newJsonParser();
