@@ -25,6 +25,7 @@ public class ResultRequirement implements Serializable {
         StepResult resultAnswer = result.getStepResult(questionIdentifier);
         resultAnswer.getResult();
 
+        // TODO all other answertypes
         if (reqAnswer instanceof BooleanType){
             boolean reqBool = ((BooleanType) reqAnswer).booleanValue();
             Boolean ansBool = (Boolean)resultAnswer.getResult();

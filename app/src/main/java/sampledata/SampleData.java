@@ -4,17 +4,6 @@ import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import org.researchstack.backbone.answerformat.AnswerFormat;
-import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
-import org.researchstack.backbone.answerformat.ChoiceAnswerFormat;
-import org.researchstack.backbone.answerformat.DateAnswerFormat;
-import org.researchstack.backbone.answerformat.TextAnswerFormat;
-import org.researchstack.backbone.model.Choice;
-import org.researchstack.backbone.step.InstructionStep;
-import org.researchstack.backbone.step.QuestionStep;
-import org.researchstack.backbone.task.OrderedTask;
-import org.researchstack.backbone.task.Task;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +20,6 @@ import ca.uhn.fhir.context.FhirContext;
 import org.hl7.fhir.dstu3.model.Questionnaire;
 
 import ca.uhn.fhir.parser.IParser;
-import manny.fhirstack_sampleapp.R;
 
 /**
  * Created by manny on 19.04.2016.
