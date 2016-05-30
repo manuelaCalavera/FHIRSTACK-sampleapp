@@ -20,12 +20,27 @@ import java.util.Date;
 import java.util.Map;
 
 /**
+ * FHIRSTACK / C3PRO_Android
+ * <p/>
  * Created by manny on 23.05.2016.
+ * <p/>
+ * This class provides the tools to create a FHIR {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse}
+ * from a ResearchStack {@link org.researchstack.backbone.result.TaskResult}
  */
 public class TaskResult2QuestionnaireResponse {
+
+    /**
+     * Returns a FHIR {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} based on the passed
+     * ResearchStack {@link org.researchstack.backbone.result.TaskResult}
+     *
+     * @param taskResult The taskResult of the conducted survey produced by a {@link org.researchstack.backbone.ui.ViewTaskActivity}
+     * @return A FHIR {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} that contains all the
+     * question IDs with corresponding answers given by the user
+     */
     public static QuestionnaireResponse taskResult2QuestionnaireResponse(TaskResult taskResult) {
         QuestionnaireResponse questionnaireResponse = new QuestionnaireResponse();
         Map<String, StepResult> stepResults = taskResult.getResults();
+        questionnaireResponse.setId(taskResult.getIdentifier());
 
         for (Map.Entry<String, StepResult> entry : stepResults.entrySet()) {
             String key = entry.getKey();
@@ -40,6 +55,14 @@ public class TaskResult2QuestionnaireResponse {
         return questionnaireResponse;
     }
 
+    /**
+     * Returns a FHIR {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemComponent} based on the passed
+     * ResearchStack {@link org.researchstack.backbone.result.StepResult}
+     *
+     * @param stepResult An individual stepResult of a ResearchStack {@link org.researchstack.backbone.result.TaskResult}
+     * @return A FHIR {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemComponent} that contains the
+     * question ID with the corresponding answer given by the user
+     */
     public static QuestionnaireResponse.QuestionnaireResponseItemComponent stepResult2ResponseItem(StepResult stepResult) {
 
         if ((stepResult != null) && (stepResult.getResult() != null)) {
@@ -51,25 +74,63 @@ public class TaskResult2QuestionnaireResponse {
         }
     }
 
+
+    /*
+    None(NotImplementedStepBody.class),
+    Scale(NotImplementedStepBody.class),
+    SingleChoice(SingleChoiceQuestionBody.class),
+    MultipleChoice(MultiChoiceQuestionBody.class),
+    Decimal(NotImplementedStepBody.class),
+    Integer(IntegerQuestionBody.class),
+    Boolean(SingleChoiceQuestionBody.class),
+    Eligibility(NotImplementedStepBody.class),
+    Text(TextQuestionBody.class),
+    TimeOfDay(NotImplementedStepBody.class),
+    DateAndTime(NotImplementedStepBody.class),
+    Date(DateQuestionBody.class),
+    TimeInterval(NotImplementedStepBody.class),
+    Location(NotImplementedStepBody.class),
+    Form(FormBody.class);
+    * */
+
+    /**
+     * Returns a {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent}
+     * based on the passed ResearchStack {@link org.researchstack.backbone.result.StepResult}
+     *
+     * @param stepResult A {@link org.researchstack.backbone.result.StepResult} containing an answer given by the user
+     * @return  A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent} containing the answer given by the user
+     */
     public static QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent getFHIRAnswerForStepResult(StepResult stepResult) {
 
         QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent answerComponent = new QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent();
-        if (stepResult.getAnswerFormat() instanceof BooleanAnswerFormat) {
-            answerComponent.setValue(new BooleanType((Boolean) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof IntegerAnswerFormat) {
-            answerComponent.setValue(new IntegerType((int) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof DateAnswerFormat) {
-            answerComponent.setValue(new DateType(new Date((long)stepResult.getResult())));
-        } else if (stepResult.getAnswerFormat() instanceof TextAnswerFormat) {
-            answerComponent.setValue(new StringType((String) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof ChoiceAnswerFormat) {
+
+
+        if (stepResult.getAnswerFormat() instanceof ChoiceAnswerFormat) {
+
             // TODO ChoiceAnswers
             answerComponent.setValue(new StringType((String) stepResult.getResult()));
-        }
 
+        } else if (stepResult.getAnswerFormat() instanceof IntegerAnswerFormat) {
+            answerComponent.setValue(new IntegerType((int) stepResult.getResult()));
+        } else if (stepResult.getAnswerFormat() instanceof BooleanAnswerFormat) {
+            answerComponent.setValue(new BooleanType((Boolean) stepResult.getResult()));
+        } else if (stepResult.getAnswerFormat() instanceof TextAnswerFormat) {
+            answerComponent.setValue(new StringType((String) stepResult.getResult()));
+        } else if (stepResult.getAnswerFormat() instanceof DateAnswerFormat) {
+            answerComponent.setValue(new DateType(new Date((long) stepResult.getResult())));
+        }
         return answerComponent;
     }
 
+    /**
+     * Returns a {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} based on the
+     * ResearchStack {@link org.researchstack.backbone.result.StepResult} within the passed
+     * {@link android.content.Intent}. This is the Intent returned in the onActivityResult() method
+     * of the parent activity of the {@link org.researchstack.backbone.ui.ViewTaskActivity}
+     *
+     * @param data The {@link android.content.Intent} returned by the {@link org.researchstack.backbone.ui.ViewTaskActivity}
+     * @return  A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} containing the answers given by the user
+     */
     public static QuestionnaireResponse resultIntent2QuestionnaireResponse(Intent data) {
 
         if (data != null) {

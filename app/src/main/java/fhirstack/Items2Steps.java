@@ -4,6 +4,8 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.dstu3.model.ValueSet;
+import org.hl7.fhir.dstu3.model.Questionnaire;
+
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
 import org.researchstack.backbone.answerformat.ChoiceAnswerFormat;
@@ -19,14 +21,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hl7.fhir.dstu3.model.Questionnaire;
-
 
 /**
+ * FHIRSTACK / C3PRO_Android
+ * <p/>
  * Created by manny on 02.05.2016.
+ * <p/>
+ * This class provides the tools to create ResearchStack {@link org.researchstack.backbone.step.Step}s from FHIR
+ * {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemComponent}s.
+ * <p/>
+ * Referenced ValueSets in getOptions() of ChoiceQuestions can only be resolved if included in the
+ * FHIR {@link org.hl7.fhir.dstu3.model.Questionnaire} file.
  */
 public class Items2Steps {
 
+    /**
+     * Returns a list of {@link Step}s and {@link ConditionalStep}s that can be added to a
+     * {@link ConditionalOrderedTask}. The Steps are created recursively from the passed List of
+     * {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemComponent}s. If a group item
+     * has {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent} conditions, these conditions
+     * are added to all the child steps as {@link ResultRequirement}s
+     *
+     * @param items List of FHIR items that may contain more items
+     * @return List containing {@link Step}s and {@link ConditionalStep}s that can be added to a {@link ConditionalOrderedTask}
+     */
     public static List<Step> items2Steps(List<Questionnaire.QuestionnaireItemComponent> items) {
         List<Step> steps = new ArrayList<Step>();
 
@@ -65,7 +83,17 @@ public class Items2Steps {
         return steps;
     }
 
-
+    /**
+     * Returns a {@link org.researchstack.backbone.step.Step} or {@link ConditionalStep} that can be added to a
+     * {@link ConditionalOrderedTask}. The Step is created from the passed
+     * {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemComponent}. The item must be
+     * a leaf; child items are ignored. (Group items have to be passed in a list to
+     * {@link #items2Steps(List)}.) If the Item has {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent}
+     * conditions, these conditions are added to the step as {@link ResultRequirement}s.
+     *
+     * @param item FHIR item, not of the type "group"
+     * @return {@link Step} or {@link ConditionalStep} that can be added to a {@link ConditionalOrderedTask}
+     */
     public static Step item2Step(Questionnaire.QuestionnaireItemComponent item) {
 
         String linkId = item.getLinkId();
@@ -74,7 +102,7 @@ public class Items2Steps {
         //TODO create nice title and text
 
         String itemText = item.getText();
-        String text = StringUtil.isNotNullOrEmpty(itemText) ? itemText : getTextForItem(item);
+        String text = StringUtil.isNotNullOrEmpty(itemText) ? itemText : getAlternativeTextForItem(item);
         if (!StringUtil.isNotNullOrEmpty(id)) {
             id = itemText;
         }
@@ -102,6 +130,14 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Matches the FHIR question type with the appropriate ResearchStack {@link org.researchstack.backbone.answerformat.AnswerFormat}.
+     * Not all required AnswerFormats are yet implemented by ResearchStack, so matches are made as
+     * sensible as possible.
+     *
+     * @param item The item from which a Step will be created.
+     * @return An AnswerFormat that can be used to create a {@link org.researchstack.backbone.step.QuestionStep}
+     */
     private static AnswerFormat getAnswerformat(Questionnaire.QuestionnaireItemComponent item) {
 
         /*
@@ -197,7 +233,10 @@ public class Items2Steps {
         }
     }
 
-    // checking for the questions min value
+    /**
+     * Returns the minimum number of times the item must appear or the minimum number of answers
+     * for a question - when greater than 1
+     */
     private static int getQuestionMin(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs");
         if (!list.isEmpty()) {
@@ -207,6 +246,10 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Returns the maximum number of times the group must appear or the minimum number of answers
+     * for a question - when greater than 1 and not unlimited
+     */
     private static int questionMaxOccurs(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs");
         if (!list.isEmpty()) {
@@ -216,6 +259,10 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Returns the text proving instructions intended to be rendered with the item explaining
+     * how the content of the item is to be completed.
+     */
     private static String questionInstruction(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-instruction");
         if (!list.isEmpty()) {
@@ -225,6 +272,10 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Returns the content intended for display if a user selects an icon or performs some other
+     * action seeking help about the element.
+     */
     private static String questionHelpText(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-help");
         if (!list.isEmpty()) {
@@ -234,6 +285,9 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Returns the units in which the question's answer should be captured.
+     */
     private static String numericAnswerUnit(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-units");
         if (!list.isEmpty()) {
@@ -243,6 +297,9 @@ public class Items2Steps {
         }
     }
 
+    /**
+     * Returns the value that should be pre-populated when rendering the questionnaire for user input.
+     */
     private static Extension defaultAnswer(Questionnaire.QuestionnaireItemComponent item) {
         List<Extension> list = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-defaultValue");
         if (!list.isEmpty()) {
@@ -252,7 +309,11 @@ public class Items2Steps {
         }
     }
 
-    private static String getTextForItem(Questionnaire.QuestionnaireItemComponent item) {
+    /**
+     * Returns a text created from the item's instruction text or help text that can be used in case
+     * the item itself does not have a proper text to display.
+     */
+    private static String getAlternativeTextForItem(Questionnaire.QuestionnaireItemComponent item) {
         String instr = questionInstruction(item);
         String hlp = questionHelpText(item);
 
@@ -260,7 +321,11 @@ public class Items2Steps {
         return StringUtil.isNotNullOrEmpty(txt) ? txt : "no Text";
     }
 
-
+    /**
+     * Returns an Array of {@link org.researchstack.backbone.model.Choice}s created from either the item's getOption() or getOptions().
+     * Referenced ValueSets in getOptions() can only be resolved if included in the FHIR
+     * questionnaire file.
+     */
     private static Choice[] resolveAnswerChoices(Questionnaire.QuestionnaireItemComponent item) {
 
         // where we possibly find options
@@ -287,8 +352,6 @@ public class Items2Steps {
         * if a reference exists, resolve valueSet
         * for now assuming that only internal references exist
         * */
-
-
         else if (reference.getResource() != null) {
             ValueSet vSet = (ValueSet) reference.getResource();
 
@@ -345,6 +408,10 @@ public class Items2Steps {
         return c;
     }
 
+    /**
+     * Returns a list with a {@link ResultRequirement} for every
+     * {@link org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent} of the item.
+     */
     private static List<ResultRequirement> getRequirementsFor(Questionnaire.QuestionnaireItemComponent item) {
         List<ResultRequirement> reqs = new ArrayList<>();
         for (Questionnaire.QuestionnaireItemEnableWhenComponent enableWhen : item.getEnableWhen()) {
