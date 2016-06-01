@@ -46,21 +46,20 @@ public class Items2Steps {
      * @return List containing {@link Step}s and {@link ConditionalStep}s that can be added to a {@link ConditionalOrderedTask}
      */
     public static List<Step> items2Steps(List<Questionnaire.QuestionnaireItemComponent> items) {
-        List<Step> steps = new ArrayList<Step>();
+        List<Step> steps = new ArrayList<>();
 
         for (Questionnaire.QuestionnaireItemComponent item : items) {
-            Questionnaire.QuestionnaireItemType qType = item.getType();
 
             if (item.getType() == Questionnaire.QuestionnaireItemType.GROUP) {
                 List<Step> newSteps = items2Steps(item.getItem());
                 if (item.hasEnableWhen()) {
                     List<ResultRequirement> reqs = getRequirementsFor(item);
                     for (Step step : newSteps) {
-                        if (step instanceof QuestionStep || step instanceof ConditionalQuestionStep) {
+                        if (step instanceof QuestionStep) {
                             ConditionalQuestionStep newStep = (ConditionalQuestionStep) step;
                             newStep.addRequirements(reqs);
                             steps.add(newStep);
-                        } else if (step instanceof InstructionStep || step instanceof ConditionalInstructionStep) {
+                        } else if (step instanceof InstructionStep) {
                             ConditionalInstructionStep newStep = (ConditionalInstructionStep) step;
                             newStep.addRequirements(reqs);
                             steps.add(newStep);
@@ -183,7 +182,9 @@ public class Items2Steps {
             case INTEGER:
                 List<Extension> minVals = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/minValue");
                 List<Extension> maxVals = item.getExtensionsByUrl("http://hl7.org/fhir/StructureDefinition/maxValue");
-                Extension dflt = defaultAnswer(item);
+                /**Default Answer not yet used in available AnswerFormats*/
+                //Extension dflt = defaultAnswer(item);
+
                 if (!minVals.isEmpty() && !maxVals.isEmpty()) {
                     //Type sMinVal = minVals.get(0).getValue();
                     String sMinVal = minVals.get(0).getValue().primitiveValue();
@@ -192,11 +193,14 @@ public class Items2Steps {
                     int minVal = Integer.parseInt(sMinVal);
                     int maxVal = Integer.parseInt(sMaxVal);
 
+                    /**Default Answer not yet used in available AnswerFormats
                     int def = minVal;
                     if (dflt != null) {
                         String sDef = dflt.getValue().primitiveValue();
                         def = Integer.parseInt(sDef);
                     }
+                     */
+
                     // scale answer format not yet available, so have to use Integer
                     //return new IntegerAnswerFormat(AnswerFormat. some scale answer style)
                     return new IntegerAnswerFormat(minVal, maxVal);
@@ -338,11 +342,11 @@ public class Items2Steps {
         * if options contains codings, we fill the options into the choiceList
         * */
         if (!option.isEmpty()) {
-            List<Choice> choiceList = new ArrayList<Choice>();
+            List<Choice> choiceList = new ArrayList<>();
             for (Questionnaire.QuestionnaireItemOptionComponent c : option) {
                 String text = c.getValue().primitiveValue();
                 Type value = c.getValue();
-                choiceList.add(new Choice(text, value));
+                choiceList.add(new Choice<Type>(text, value));
             }
             return choiceList.toArray(new Choice[choiceList.size()]);
         }
@@ -358,13 +362,13 @@ public class Items2Steps {
             // this happens with included options // valueset contained
             List<ValueSet.ConceptSetComponent> includes = vSet.getCompose().getInclude();
             if (!includes.isEmpty()) {
-                List<Choice> choiceList = new ArrayList<Choice>();
+                List<Choice> choiceList = new ArrayList<>();
                 for (ValueSet.ConceptSetComponent include : includes) {
                     List<ValueSet.ConceptReferenceComponent> concepts = include.getConcept();
                     for (ValueSet.ConceptReferenceComponent concept : concepts) {
                         String text = concept.getDisplay();
                         String code = concept.getCode();
-                        choiceList.add(new Choice(text, code));
+                        choiceList.add(new Choice<String>(text, code));
                     }
                 }
                 return choiceList.toArray(new Choice[choiceList.size()]);
@@ -374,11 +378,11 @@ public class Items2Steps {
             // does this happen at all?
             List<ValueSet.ValueSetExpansionContainsComponent> expansion = vSet.getExpansion().getContains();
             if (!expansion.isEmpty()) {
-                List<Choice> choiceList = new ArrayList<Choice>();
+                List<Choice> choiceList = new ArrayList<>();
                 for (ValueSet.ValueSetExpansionContainsComponent contain : expansion) {
                     String text = contain.getDisplay();
                     String code = contain.getCode();
-                    choiceList.add(new Choice(text, code));
+                    choiceList.add(new Choice<String>(text, code));
                 }
                 return choiceList.toArray(new Choice[choiceList.size()]);
             }
@@ -401,11 +405,11 @@ public class Items2Steps {
         * noob error handling, don't try this at home, do it right
         * */
         else {
-            Choice[] c = {new Choice("no choices found", "N/A")};
-            return c;
+            Choice[] choiceArray = {new Choice<String>("no choices found", "N/A")};
+            return choiceArray;
         }
-        Choice[] c = {new Choice("no choices found", "N/A")};
-        return c;
+        Choice[] choiceArray = {new Choice<String>("no choices found", "N/A")};
+        return choiceArray;
     }
 
     /**

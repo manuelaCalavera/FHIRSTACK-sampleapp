@@ -27,16 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int DATES_SURVEY = 3;
     private static final int VALUESETCONTAINED_SURVEY = 4;
     private static final int VALUESETRELATIVE_SURVEY = 5;
-    private static final int WITHDRAWAL = 6;
+    private static final int CONDITIONALS = 6;
 
     //views
-    private AppCompatButton survey1Button;
-    private AppCompatButton survey2Button;
-    private AppCompatButton survey3Button;
-    private AppCompatButton survey4Button;
-    private AppCompatButton survey5Button;
-    private AppCompatButton survey6Button;
-    private AppCompatButton clearButton;
     private AppCompatTextView resultView;
 
     @Override
@@ -44,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        survey1Button = (AppCompatButton) findViewById(R.id.survey1_button);
+        AppCompatButton survey1Button = (AppCompatButton) findViewById(R.id.survey1_button);
         survey1Button.setText("questionnaire text values");
         survey1Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        survey2Button = (AppCompatButton) findViewById(R.id.survey2_button);
+        AppCompatButton survey2Button = (AppCompatButton) findViewById(R.id.survey2_button);
         survey2Button.setText("questionnaire choices");
         survey2Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        survey3Button = (AppCompatButton) findViewById(R.id.survey3_button);
+        AppCompatButton survey3Button = (AppCompatButton) findViewById(R.id.survey3_button);
         survey3Button.setText("questionnaire dates");
         survey3Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        survey4Button = (AppCompatButton) findViewById(R.id.survey4_button);
+        AppCompatButton survey4Button = (AppCompatButton) findViewById(R.id.survey4_button);
         survey4Button.setText("questionnaire valueset contained");
         survey4Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,12 +73,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        survey5Button = (AppCompatButton) findViewById(R.id.survey5_button);
+        AppCompatButton survey5Button = (AppCompatButton) findViewById(R.id.survey5_button);
         survey5Button.setText("questionnaire valueset relative");
         survey5Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchSurvey(R.raw.questionnaire_valueset_realative, VALUESETRELATIVE_SURVEY);
+            }
+        });
+
+        AppCompatButton survey6Button = (AppCompatButton) findViewById(R.id.survey6_button);
+        survey6Button.setText("choices conditionals");
+        survey6Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSurvey(R.raw.questionnaire_choices2, CONDITIONALS);
             }
         });
 
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
         */
 
-        clearButton = (AppCompatButton) findViewById(R.id.clear_button);
+        AppCompatButton clearButton = (AppCompatButton) findViewById(R.id.clear_button);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,8 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void printQuestionnaireAnswers(QuestionnaireResponse response) {
-        String results = "";
-        results = ((FHIRStackApplication) getApplication()).getFhirContext().newJsonParser().encodeResourceToString(response);
+        String results = ((FHIRStackApplication) getApplication()).getFhirContext().newJsonParser().encodeResourceToString(response);
         resultView.setText(results);
     }
 

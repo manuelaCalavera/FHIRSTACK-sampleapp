@@ -7,6 +7,7 @@ import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
 import org.researchstack.backbone.answerformat.ChoiceAnswerFormat;
 import org.researchstack.backbone.answerformat.DateAnswerFormat;
@@ -98,25 +99,28 @@ public class TaskResult2QuestionnaireResponse {
      * based on the passed ResearchStack {@link org.researchstack.backbone.result.StepResult}
      *
      * @param stepResult A {@link org.researchstack.backbone.result.StepResult} containing an answer given by the user
-     * @return  A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent} containing the answer given by the user
+     * @return A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent} containing the answer given by the user
      */
     public static QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent getFHIRAnswerForStepResult(StepResult stepResult) {
 
         QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent answerComponent = new QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent();
 
+        AnswerFormat format = stepResult.getAnswerFormat();
 
-        if (stepResult.getAnswerFormat() instanceof ChoiceAnswerFormat) {
+        if (format instanceof ChoiceAnswerFormat) {
 
-            // TODO ChoiceAnswers
-            answerComponent.setValue(new StringType((String) stepResult.getResult()));
+            if (format instanceof BooleanAnswerFormat) {
+                answerComponent.setValue(new BooleanType((Boolean) stepResult.getResult()));
+            } else {
+                // TODO ChoiceAnswers
+                answerComponent.setValue(new StringType((String) stepResult.getResult()));
+            }
 
-        } else if (stepResult.getAnswerFormat() instanceof IntegerAnswerFormat) {
+        } else if (format instanceof IntegerAnswerFormat) {
             answerComponent.setValue(new IntegerType((int) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof BooleanAnswerFormat) {
-            answerComponent.setValue(new BooleanType((Boolean) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof TextAnswerFormat) {
+        } else if (format instanceof TextAnswerFormat) {
             answerComponent.setValue(new StringType((String) stepResult.getResult()));
-        } else if (stepResult.getAnswerFormat() instanceof DateAnswerFormat) {
+        } else if (format instanceof DateAnswerFormat) {
             answerComponent.setValue(new DateType(new Date((long) stepResult.getResult())));
         }
         return answerComponent;
@@ -129,7 +133,7 @@ public class TaskResult2QuestionnaireResponse {
      * of the parent activity of the {@link org.researchstack.backbone.ui.ViewTaskActivity}
      *
      * @param data The {@link android.content.Intent} returned by the {@link org.researchstack.backbone.ui.ViewTaskActivity}
-     * @return  A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} containing the answers given by the user
+     * @return A {@link org.hl7.fhir.dstu3.model.QuestionnaireResponse} containing the answers given by the user
      */
     public static QuestionnaireResponse resultIntent2QuestionnaireResponse(Intent data) {
 
