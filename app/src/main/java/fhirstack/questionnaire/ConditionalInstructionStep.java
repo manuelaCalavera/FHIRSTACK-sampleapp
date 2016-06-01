@@ -1,6 +1,5 @@
-package fhirstack;
+package fhirstack.questionnaire;
 
-import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.researchstack.backbone.result.TaskResult;
 import org.researchstack.backbone.step.InstructionStep;
 

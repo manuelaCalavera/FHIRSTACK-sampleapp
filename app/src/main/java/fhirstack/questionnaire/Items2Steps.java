@@ -1,4 +1,4 @@
-package fhirstack;
+package fhirstack.questionnaire;
 
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -20,6 +20,8 @@ import org.researchstack.backbone.step.Step;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import fhirstack.utils.StringUtil;
 
 
 /**

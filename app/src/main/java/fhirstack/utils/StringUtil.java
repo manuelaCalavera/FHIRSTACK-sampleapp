@@ -1,4 +1,4 @@
-package fhirstack;
+package fhirstack.utils;
 
 /**
  * FHIRSTACK / C3PRO_Android
@@ -7,7 +7,7 @@ package fhirstack;
  * <p/>
  * This is a helper class providing tools to check Strings for content.
  */
-class StringUtil {
+public class StringUtil {
     public static boolean isNotNullOrEmpty (String str){
         return (str != null) && !str.isEmpty();
     }

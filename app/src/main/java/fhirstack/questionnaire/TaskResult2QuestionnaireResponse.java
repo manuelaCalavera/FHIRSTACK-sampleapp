@@ -1,4 +1,4 @@
-package fhirstack;
+package fhirstack.questionnaire;
 
 import android.content.Intent;
 

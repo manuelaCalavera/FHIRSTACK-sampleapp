@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 
-import fhirstack.Questionnaire2Task;
-import fhirstack.TaskResult2QuestionnaireResponse;
+import fhirstack.questionnaire.Questionnaire2Task;
+import fhirstack.questionnaire.TaskResult2QuestionnaireResponse;
 import sampledata.SampleData;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;

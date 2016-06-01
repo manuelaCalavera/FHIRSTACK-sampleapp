@@ -1,4 +1,4 @@
-package fhirstack;
+package fhirstack.questionnaire;
 
 import org.researchstack.backbone.result.TaskResult;
 import org.researchstack.backbone.step.Step;
