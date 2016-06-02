@@ -3,7 +3,7 @@ FHIRSTACK
 FHIRSTACK uses the [HAPI][hapi] FHIR library and [ResearchStack] in an attempt to bring the [C3-PRO] functionality to Android.
 
 Combining [🔥 FHIR][fhir] and [ResearchStack], usually for data storage into [i2b2][], this framework allows you to use 
-FHIR 'Questionnaire' resources directly with a ResearchStack 'ViewTaskActivity' and will return FHIR 'QuestionnaireResponse' that 
+FHIR `Questionnaire` resources directly with a ResearchStack `ViewTaskActivity` and will return FHIR `QuestionnaireResponse` that 
 you can send to your server.
 
 #### Usage
@@ -23,8 +23,8 @@ The framework will consist of several modules that complement each other, simila
 
 ### Questionnaires
 
-Enables the conversion of a FHIR `Questionnaire` resource to a ResearchSTack 'task' that can be presented to the user using a 
-'ViewTaskActivity' and conversion back from a 'TaskResult' to a FHIR 'QuestionnaireResponse' resource.
+Enables the conversion of a FHIR `Questionnaire` resource to a ResearchSTack `task` that can be presented to the user using a 
+`ViewTaskActivity` and conversion back from a `TaskResult` to a FHIR `QuestionnaireResponse` resource.
 
 ### DataQueue
 
