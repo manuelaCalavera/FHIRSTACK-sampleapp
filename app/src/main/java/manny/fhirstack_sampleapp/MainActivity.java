@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import ch.usz.fhirstack.questionnaire.Questionnaire2Task;
@@ -17,19 +20,18 @@ import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.researchstack.backbone.task.Task;
 import org.researchstack.backbone.ui.ViewTaskActivity;
 
-
+/**
+ * FHIRSTACK / C3PRO_Android
+ * <p/>
+ * Created by manny on 19.04.2016.
+ * <p/>
+ * This is the main activity of the sample application to show how you can use FHIRSTACK to conduct
+ * a survey you have as a HAPI FHIR Questionnaire
+ */
 public class MainActivity extends AppCompatActivity {
 
-    // Activity Request Codes
-    private static final int TEXTVALUES_SURVEY = 1;
-    private static final int CHOICES_SURVEY = 2;
-    private static final int DATES_SURVEY = 3;
-    private static final int VALUESETCONTAINED_SURVEY = 4;
-    private static final int VALUESETRELATIVE_SURVEY = 5;
-    private static final int CONDITIONALS = 6;
-
-    //views
-    private AppCompatTextView resultView;
+    // Activity Request Code used when starting a survey from launchSurvey()
+    private static final int RAWSURVEY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,62 +39,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /**
-         * Creating the individual buttons to start the sample surveys provided in the raw folder.
-         * Manueal work for now, hoping to replace it with a more elegant solution soon.
+         * Adding an Item to the ListView for every questionnaire file in the raw resource folder
          * */
-        AppCompatButton survey1Button = (AppCompatButton) findViewById(R.id.survey1_button);
-        survey1Button.setText("questionnaire text values");
-        survey1Button.setOnClickListener(new View.OnClickListener() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, SampleData.getAllRawResources());
+        final ListView surveyListView = (ListView) findViewById(R.id.survey_list);
+        surveyListView.setAdapter(adapter);
+
+        surveyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_textvalues, TEXTVALUES_SURVEY);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int rawID = getResources().getIdentifier((String) surveyListView.getItemAtPosition(position),
+                        "raw", getPackageName());
+                launchSurvey(rawID, RAWSURVEY);
             }
         });
 
-        AppCompatButton survey2Button = (AppCompatButton) findViewById(R.id.survey2_button);
-        survey2Button.setText("questionnaire choices");
-        survey2Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_choices, CHOICES_SURVEY);
-            }
-        });
-
-        AppCompatButton survey3Button = (AppCompatButton) findViewById(R.id.survey3_button);
-        survey3Button.setText("questionnaire dates");
-        survey3Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_dates, DATES_SURVEY);
-            }
-        });
-
-        AppCompatButton survey4Button = (AppCompatButton) findViewById(R.id.survey4_button);
-        survey4Button.setText("questionnaire valueset contained");
-        survey4Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_valueset_contained, VALUESETCONTAINED_SURVEY);
-            }
-        });
-
-        AppCompatButton survey5Button = (AppCompatButton) findViewById(R.id.survey5_button);
-        survey5Button.setText("questionnaire valueset relative");
-        survey5Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_valueset_realative, VALUESETRELATIVE_SURVEY);
-            }
-        });
-
-        AppCompatButton survey6Button = (AppCompatButton) findViewById(R.id.survey6_button);
-        survey6Button.setText("choices conditionals");
-        survey6Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.questionnaire_choices2, CONDITIONALS);
-            }
-        });
 
         AppCompatButton clearButton = (AppCompatButton) findViewById(R.id.clear_button);
         clearButton.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, R.string.menu_data_cleared, Toast.LENGTH_SHORT).show();
             }
         });
-
-        resultView = (AppCompatTextView) findViewById(R.id.result_textView);
-        resultView.setText("Welcome");
     }
 
 
@@ -112,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
      * launch a survey from a json provided in the raw folder. rawID is the resource id that can be
      * accessed by R.raw.filename, requistID will be passed to the onActivityResult callback to
      * identify the started survey.
-     * */
+     */
     private void launchSurvey(int rawID, int requestID) {
         FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
 
@@ -124,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*
         * This is how you launch a ViewTaskActivity from a FHIR Questionnaire
-        * The activity must be declared in AndroidManifest!
+        * The activity must be declared in the AndroidManifest!
         * */
         Task task = Questionnaire2Task.questionnaire2Task(questionnaire);
         Intent intent = ViewTaskActivity.newIntent(this, task);
@@ -148,32 +106,29 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case TEXTVALUES_SURVEY:
-                    // DO Whatever
+                case RAWSURVEY:
+                    QuestionnaireResponse response = TaskResult2QuestionnaireResponse.resultIntent2QuestionnaireResponse(data);
+                    printQuestionnaireAnswers(response);
                     break;
-                case CHOICES_SURVEY:
-                    // DO Whatever
-                    break;
-                case DATES_SURVEY:
-                    // DO Whatever
-                    break;
-                default:
-                    // DO Whatever
             }
-            QuestionnaireResponse response = TaskResult2QuestionnaireResponse.resultIntent2QuestionnaireResponse(data);
-            printQuestionnaireAnswers(response);
         }
     }
 
     /**
-     * prints the QuestionnaireResponse into the textView of the main activity under the buttons.
-     * */
+     * prints the QuestionnaireResponse into the textView of the main activity under the list of questionnaires.
+     */
     private void printQuestionnaireAnswers(QuestionnaireResponse response) {
         String results = ((FHIRStackApplication) getApplication()).getFhirContext().newJsonParser().encodeResourceToString(response);
+        AppCompatTextView resultView = (AppCompatTextView) findViewById(R.id.result_textView);
         resultView.setText(results);
     }
 
+    /**
+     * clears the data in the textView of the main activity under the list of questionnaires
+     * */
     private void clearData() {
+        AppCompatTextView resultView = (AppCompatTextView) findViewById(R.id.result_textView);
         resultView.setText("");
     }
 }
+

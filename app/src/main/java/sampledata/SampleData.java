@@ -14,31 +14,44 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
 
-import ca.uhn.fhir.parser.IParser;
+import manny.fhirstack_sampleapp.R;
 
 /**
+ * FHIRSTACK / C3PRO_Android
+ * <p/>
  * Created by manny on 19.04.2016.
+ * <p/>
+ * This class can provide sampledate to be used with FHIRSTACK. This is only for demonstration
+ * purposes. Use your own resources for your apps.
  */
 public class SampleData extends AppCompatActivity {
 
+    /**
+     * returns a Questionnaire from the jason with corresponding to the rawID from the "raw" resource
+     * folder. A FhirContext is needed for the parser, so we don't have to create a new context
+     * every time a file has to be parsed.
+     * */
     public static Questionnaire getQuestionnaireFromJson(FhirContext fhirContext, Resources res, int rawID) {
-
 
         IParser parser = fhirContext.newJsonParser();
 
         String json = getJasonAsString(res, rawID);
 
-        Questionnaire questionnaire = parser.parseResource(Questionnaire.class, json);
-
-        return questionnaire;
+        return parser.parseResource(Questionnaire.class, json);
 
     }
 
+    /**
+     * loads the content of the file corresponding to the rawID into a string.
+     * */
     public static String getJasonAsString(Resources res, int rawID) {
 
         //InputStream is = res.openRawResource(R.raw.questionnaire_textvalues);
@@ -102,5 +115,30 @@ public class SampleData extends AppCompatActivity {
         inputStream.close();
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * get the names of all the files in the raw resource folder starting with "questionnaire"
+     */
+    public static String[] getAllRawResources() {
+        Field fields[] = R.raw.class.getDeclaredFields();
+        ArrayList<String> nameList = new ArrayList();
+
+        try {
+            for (int i = 0; i < fields.length; i++) {
+                Field f = fields[i];
+                if (f.getName().startsWith("questionnaire")) {
+                    nameList.add(f.getName());
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (nameList.isEmpty()) {
+            nameList.add("no files found");
+        }
+        String[] names = nameList.toArray(new String[nameList.size()]);
+        return names;
     }
 }

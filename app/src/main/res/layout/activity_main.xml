@@ -10,30 +10,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="manny.fhirstack_sampleapp.MainActivity">
 
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey1_button"
+    <ListView
+        android:id="@+id/survey_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey1" />
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey2_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey2" />
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey3_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey3" />
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey4_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey4" />
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey5_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey5" />
-    <android.support.v7.widget.AppCompatButton android:id="@+id/survey6_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="survey5" />
+        android:layout_height="wrap_content" >
+    </ListView>
     <android.support.v7.widget.AppCompatTextView android:id="@+id/result_textView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
