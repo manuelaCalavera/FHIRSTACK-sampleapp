@@ -11,11 +11,17 @@ you can send to your server.
 For now, this project contains a library module and an app module to show how to use the library. The code is commented with 
 javadoc. A proper maven link and more instructions on how to use may follow soon.
 
-
 #### Versions
 
 The library uses HAPI FHIR 1.5 for dstu3. Questionnaires in dstu2 (with group and question elements) will not work with this demo setup. 
 Target Android sdk is 23, minimum sdk 16 due to ResearchStack.
+
+#### Issues
+
+Implementation is ongoing, not everything is complete and nothing has been systematically tested.
+- Answers to open choice questions ("open-choice", "http://hl7.org/fhir/answer-format") are not yet added to QuestionnaireResponse
+- SampleData can not parse externally linked valueSets, they must be contained in the Questionnaire json-file
+- EnableWhen conditions have only been tested with boolean answertypes
 
 Modules
 -------
