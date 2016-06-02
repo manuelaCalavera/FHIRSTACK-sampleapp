@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FHIRSTACK-sampleapp.iml" filepath="$PROJECT_DIR$/FHIRSTACK-sampleapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fhirstack/fhirstack.iml" filepath="$PROJECT_DIR$/fhirstack/fhirstack.iml" />
     </modules>
   </component>
 </project>

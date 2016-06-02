@@ -8,9 +8,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.Toast;
 
-
-import fhirstack.questionnaire.Questionnaire2Task;
-import fhirstack.questionnaire.TaskResult2QuestionnaireResponse;
+import ch.usz.fhirstack.questionnaire.Questionnaire2Task;
+import ch.usz.fhirstack.questionnaire.TaskResult2QuestionnaireResponse;
 import sampledata.SampleData;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
@@ -37,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         * Creating the individual buttons to start the sample surveys provided in the raw folder.
+         * Manueal work for now, hoping to replace it with a more elegant solution soon.
+         * */
         AppCompatButton survey1Button = (AppCompatButton) findViewById(R.id.survey1_button);
         survey1Button.setText("questionnaire text values");
         survey1Button.setOnClickListener(new View.OnClickListener() {
@@ -91,17 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        survey6Button = (AppCompatButton) findViewById(R.id.survey5_button);
-        survey6Button.setText("questionnaire valueset relative");
-        survey6Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSurvey(R.raw.withdrawal, WITHDRAWAL);
-            }
-        });
-        */
-
         AppCompatButton clearButton = (AppCompatButton) findViewById(R.id.clear_button);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,13 +108,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * launch a survey from a json provided in the raw folder. rawID is the resource id that can be
+     * accessed by R.raw.filename, requistID will be passed to the onActivityResult callback to
+     * identify the started survey.
+     * */
     private void launchSurvey(int rawID, int requestID) {
         FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
 
+        /**
+         * Load your questionnaire resource with HAPI. For demonstration purposes, we load a json
+         * file from our raw folder
+         * */
         Questionnaire questionnaire = SampleData.getQuestionnaireFromJson(myApp.getFhirContext(), getResources(), rawID);
 
         /*
-        * This is how you launch a ViewTaskActivity (must be declared in AndroidManifest!) from a FHIR Questionnaire
+        * This is how you launch a ViewTaskActivity from a FHIR Questionnaire
+        * The activity must be declared in AndroidManifest!
         * */
         Task task = Questionnaire2Task.questionnaire2Task(questionnaire);
         Intent intent = ViewTaskActivity.newIntent(this, task);
@@ -163,8 +165,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    /**
+     * prints the QuestionnaireResponse into the textView of the main activity under the buttons.
+     * */
     private void printQuestionnaireAnswers(QuestionnaireResponse response) {
         String results = ((FHIRStackApplication) getApplication()).getFhirContext().newJsonParser().encodeResourceToString(response);
         resultView.setText(results);
@@ -173,5 +176,4 @@ public class MainActivity extends AppCompatActivity {
     private void clearData() {
         resultView.setText("");
     }
-
 }

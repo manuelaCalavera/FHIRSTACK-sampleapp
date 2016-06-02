@@ -1,4 +1,4 @@
-package fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire;
 
 import org.researchstack.backbone.result.TaskResult;
 
@@ -20,17 +20,17 @@ public interface ConditionalStep {
      * Adds a {@link ResultRequirement} which has to be met in order for the ConditionalStep to be
      * displayed to the user.
      * */
-    public void addRequirement (ResultRequirement req);
+    void addRequirement(ResultRequirement req);
 
     /**
      * Adds a List of {@link ResultRequirement}s which have to be met in order for the ConditionalStep
      * to be displayed to the user.
      * */
-    public void addRequirements (List<ResultRequirement> reqs);
+    void addRequirements(List<ResultRequirement> reqs);
 
     /**
      * Checks if all the {@link ResultRequirement}s of a ConditionalStep are met by the answers
      * given by the user up to the point of the check.
      * */
-    public boolean requirementsAreSatisfiedBy(TaskResult result);
+    boolean requirementsAreSatisfiedBy(TaskResult result);
 }

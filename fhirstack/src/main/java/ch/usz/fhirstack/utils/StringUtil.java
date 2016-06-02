@@ -1,4 +1,4 @@
-package fhirstack.utils;
+package ch.usz.fhirstack.utils;
 
 /**
  * FHIRSTACK / C3PRO_Android

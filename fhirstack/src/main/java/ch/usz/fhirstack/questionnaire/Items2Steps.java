@@ -1,4 +1,4 @@
-package fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire;
 
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import fhirstack.utils.StringUtil;
+import ch.usz.fhirstack.utils.StringUtil;
 
 
 /**

@@ -1,4 +1,4 @@
-package fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire;
 
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.result.TaskResult;
