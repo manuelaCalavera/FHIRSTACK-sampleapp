@@ -22,6 +22,7 @@ Implementation is ongoing, not everything is complete and nothing has been syste
 - Answers to open choice questions ("open-choice", "http://hl7.org/fhir/answer-format") are not yet added to QuestionnaireResponse
 - SampleData can not parse externally linked valueSets, they must be contained in the Questionnaire json-file
 - EnableWhen conditions have only been tested with boolean answertypes
+- No proper error handling implemented as of yet.
 
 Modules
 -------
