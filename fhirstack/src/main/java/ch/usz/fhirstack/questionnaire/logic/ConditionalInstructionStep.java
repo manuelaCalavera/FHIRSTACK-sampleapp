@@ -1,4 +1,4 @@
-package ch.usz.fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire.logic;
 
 import org.researchstack.backbone.result.TaskResult;
 import org.researchstack.backbone.step.InstructionStep;
@@ -27,7 +27,7 @@ public class ConditionalInstructionStep extends InstructionStep implements Condi
      * The parent class {@link org.researchstack.backbone.step.InstructionStep} has no default
      * constructor, so we have to provide one. This constructor should not be used.
      */
-    public ConditionalInstructionStep(){
+    private ConditionalInstructionStep(){
         super("id", "title", "detailText");
     }
 

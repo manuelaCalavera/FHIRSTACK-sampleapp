@@ -13,7 +13,8 @@ import org.researchstack.backbone.storage.file.PinCodeConfig;
 import org.researchstack.backbone.storage.file.SimpleFileAccess;
 import org.researchstack.backbone.storage.file.UnencryptedProvider;
 
-import ca.uhn.fhir.context.FhirContext;
+import ch.usz.fhirstack.FHIRStack;
+import ch.usz.fhirstack.dataqueue.DataQueue;
 
 /**
  * FHIRSTACK / C3PRO_Android
@@ -25,25 +26,20 @@ import ca.uhn.fhir.context.FhirContext;
  * FhirContext here and provide it where necessary in your app. This helps keeping the use of
  * resources minimal.
  * ResearchStack configurations are copied from the ResearchStack sample app
- *
  */
 public class FHIRStackApplication extends Application {
 
-    private FhirContext fhirContext;
-
-    /* with older version of HAPI it seemed necessary to enable multidex to accomodate the large
+    /* with HAPI it seemed necessary to enable multidex to accomodate the large
     number of operations provided by the package. It seems to work without it now. Leaving it here
-    for now just in case.
+    for now just in case.*/
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
-    */
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
 
         // ResearchStack: Customize your pin code preferences
@@ -64,19 +60,15 @@ public class FHIRStackApplication extends Application {
         StorageAccess.getInstance().init(pinCodeConfig, encryptionProvider, fileAccess, database);
 
         /**
-         * One FHIR context to be used anywhere in your app to parse jsons etc.
-         * Access it anywehre:
-         * FHIRStackApplication myApp = (FHIRStackApplication) getApplication();
-         * FhirContext myContext = myApp.getFhirContext();
+         * Initialize FHIRStack:
+         * FHIRStack will provide you with a FhirContext. This Object is expensive and you should
+         * only have one instance in your app. Therefore, FHIRStack will keep it as a singleton.
+         * Access it by calling FHIRStack.getFhirContext();
+         * <p />
+         * If you provide a context (your application) and an URL, FHIRStack
+         * will create a DataQueue for you to create and read Resources from your server in a
+         * background service.
          * */
-        this.fhirContext = FhirContext.forDstu3();
-    }
-
-    /**
-     * Returns a FhirContext that can be used anywhere in the app. It is recommended not to create
-     * a new FhirContext every time you need one because they take up quite a lot of resources.
-     * */
-    public FhirContext getFhirContext(){
-        return this.fhirContext;
+        FHIRStack.init(this, "http://fhirtest.uhn.ca/baseDstu3");
     }
 }

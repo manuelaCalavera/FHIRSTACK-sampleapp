@@ -1,4 +1,4 @@
-package ch.usz.fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire.logic;
 
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Reference;

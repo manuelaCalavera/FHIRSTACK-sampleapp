@@ -10,13 +10,16 @@ android {
         versionCode 1
         versionName "1.0"
         // Enabling multidex support.
-        //multiDexEnabled true
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    dexOptions {
+        javaMaxHeapSize "3g"
     }
 }
 
@@ -27,6 +30,7 @@ dependencies {
     compile 'org.researchstack:backbone:1.0.0.rc4'
     compile 'org.researchstack:skin:1.0.0.rc4'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.birbit:android-priority-jobqueue:2.0.0-alpha3'
     compile (group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.5', classifier: 'dstu3') {
         exclude module: 'javax.servlet-api'
         exclude module: 'hapi-fhir-base'

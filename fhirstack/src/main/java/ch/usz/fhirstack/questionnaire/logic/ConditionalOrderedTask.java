@@ -1,5 +1,6 @@
-package ch.usz.fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire.logic;
 
+import org.researchstack.backbone.answerformat.TextAnswerFormat;
 import org.researchstack.backbone.result.TaskResult;
 import org.researchstack.backbone.step.Step;
 import org.researchstack.backbone.task.OrderedTask;
@@ -24,8 +25,8 @@ public class ConditionalOrderedTask extends OrderedTask implements Serializable 
      * The parent class {@link org.researchstack.backbone.task.OrderedTask} has no default constructor, so we have to provide one.
      * This constructor should not be used.
      */
-    public ConditionalOrderedTask() {
-        super("", new ConditionalQuestionStep());
+    private ConditionalOrderedTask() {
+        super("", new ConditionalQuestionStep("", "", new TextAnswerFormat()));
     }
 
     /**

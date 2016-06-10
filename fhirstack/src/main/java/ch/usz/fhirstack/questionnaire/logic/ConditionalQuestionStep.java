@@ -1,4 +1,4 @@
-package ch.usz.fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire.logic;
 
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.result.TaskResult;
@@ -30,7 +30,7 @@ public class ConditionalQuestionStep extends QuestionStep implements Conditional
      * The parent class {@link org.researchstack.backbone.step.QuestionStep} has no default constructor, so we have to provide one.
      * This constructor should not be used.
      */
-    public ConditionalQuestionStep() {
+    private ConditionalQuestionStep() {
         super("");
     }
 

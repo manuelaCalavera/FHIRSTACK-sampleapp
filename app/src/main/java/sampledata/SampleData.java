@@ -17,11 +17,11 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
 
+import ch.usz.fhirstack.FHIRStack;
 import manny.fhirstack_sampleapp.R;
 
 /**
@@ -29,19 +29,18 @@ import manny.fhirstack_sampleapp.R;
  * <p/>
  * Created by manny on 19.04.2016.
  * <p/>
- * This class can provide sampledate to be used with FHIRSTACK. This is only for demonstration
+ * This class can provide sampledata to be used with FHIRSTACK. This is only for demonstration
  * purposes. Use your own resources for your apps.
  */
 public class SampleData extends AppCompatActivity {
 
     /**
      * returns a Questionnaire from the jason with corresponding to the rawID from the "raw" resource
-     * folder. A FhirContext is needed for the parser, so we don't have to create a new context
-     * every time a file has to be parsed.
+     * folder.
      * */
-    public static Questionnaire getQuestionnaireFromJson(FhirContext fhirContext, Resources res, int rawID) {
+    public static Questionnaire getQuestionnaireFromJson(Resources res, int rawID) {
 
-        IParser parser = fhirContext.newJsonParser();
+        IParser parser = FHIRStack.getFhirContext().newJsonParser();
 
         String json = getJasonAsString(res, rawID);
 
@@ -134,9 +133,6 @@ public class SampleData extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (nameList.isEmpty()) {
-            nameList.add("no files found");
         }
         String[] names = nameList.toArray(new String[nameList.size()]);
         return names;

@@ -1,4 +1,4 @@
-package ch.usz.fhirstack.questionnaire;
+package ch.usz.fhirstack.questionnaire.logic;
 
 import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.researchstack.backbone.step.Step;
