@@ -6,7 +6,7 @@ Combining [🔥 FHIR][fhir] and [ResearchStack], usually for data storage into [
 FHIR `Questionnaire` resources directly with a ResearchStack `ViewTaskActivity` and will return FHIR `QuestionnaireResponse` that 
 you can send to your server.
 
-#### Usage
+### Usage
 
 For now, this project contains a library module and an app module to show how to use the library. The code is commented with 
 javadoc. A proper maven link and more instructions on how to use may follow soon.
@@ -201,12 +201,12 @@ private void launchSurvey(Questionnaire questionnaire) {
     }
 ```
 
-#### Versions
+### Versions
 
 The library uses HAPI FHIR 1.5 for dstu3. Questionnaires in dstu2 (with group and question elements) will not work with this demo setup. 
 Target Android sdk is 23, minimum sdk 16 due to ResearchStack.
 
-#### Issues
+### Issues
 
 Implementation is ongoing, not everything is complete and nothing has been systematically tested.
 - Answers to open choice questions ("open-choice", "http://hl7.org/fhir/answer-format") are not yet added to QuestionnaireResponse
@@ -228,7 +228,12 @@ Enables the conversion of a FHIR `Questionnaire` resource to a ResearchSTack `ta
 This module is in the works and will provide a FHIR server implementation used to move FHIR resources, created on device, to a FHIR 
 server, without the need for user interaction nor -confirmation.
 
-
+Licence
+-------
+This work will be [Apache 2][apache] licensed. A NOTICE.txt file will follow at some point, and don't forget to also add the licensing information of the submodules somewhere in your product:
+- [ResearchStack][researchstack]
+- [HAPI FHIR][hapi]
+- [Android Priority Job Queue][jobqueue]
 
 [hapi]: http://hapifhir.io
 [researchstack]: http://researchstack.org
@@ -236,3 +241,5 @@ server, without the need for user interaction nor -confirmation.
 [fhir]: http://hl7.org/fhir/
 [researchkit]: http://researchkit.github.io
 [i2b2]: https://www.i2b2.org
+[apache]: https://github.com/chb/c3-pro-ios-framework/blob/master/LICENSE.txt
+[jobqueue]: https://github.com/yigit/android-priority-jobqueue
