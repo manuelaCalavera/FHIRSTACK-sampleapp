@@ -85,7 +85,7 @@
         {
           "question": "choice-valueSet",
           "answerCoding": {
-            "code": "2"
+            "code": "http://sf-36.org/fhir/StructureDefinition/answers-3-levels#2"
           }
         }
       ],

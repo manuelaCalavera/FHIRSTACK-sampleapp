@@ -196,11 +196,11 @@ public class Items2Steps {
                     int maxVal = Integer.parseInt(sMaxVal);
 
                     /**Default Answer not yet used in available AnswerFormats
-                    int def = minVal;
-                    if (dflt != null) {
-                        String sDef = dflt.getValue().primitiveValue();
-                        def = Integer.parseInt(sDef);
-                    }
+                     int def = minVal;
+                     if (dflt != null) {
+                     String sDef = dflt.getValue().primitiveValue();
+                     def = Integer.parseInt(sDef);
+                     }
                      */
 
                     // scale answer format not yet available, so have to use Integer
@@ -342,9 +342,11 @@ public class Items2Steps {
 
         /*
         * if options contains codings, we fill the options into the choiceList
+        * does this happen at all?
         * */
         if (!option.isEmpty()) {
             List<Choice> choiceList = new ArrayList<>();
+
             for (Questionnaire.QuestionnaireItemOptionComponent c : option) {
                 String text = c.getValue().primitiveValue();
                 Type value = c.getValue();
@@ -366,11 +368,12 @@ public class Items2Steps {
             if (!includes.isEmpty()) {
                 List<Choice> choiceList = new ArrayList<>();
                 for (ValueSet.ConceptSetComponent include : includes) {
+                    String system = include.getSystem();
                     List<ValueSet.ConceptReferenceComponent> concepts = include.getConcept();
                     for (ValueSet.ConceptReferenceComponent concept : concepts) {
                         String text = concept.getDisplay();
                         String code = concept.getCode();
-                        choiceList.add(new Choice<String>(text, code));
+                        choiceList.add(new Choice<String>(text, system+"#"+code));
                     }
                 }
                 return choiceList.toArray(new Choice[choiceList.size()]);

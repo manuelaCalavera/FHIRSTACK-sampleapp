@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void launchSurvey(Questionnaire questionnaire) {
 
         final QuestionnaireFragment questionnaireFragment = new QuestionnaireFragment();
-        questionnaireFragment.init(questionnaire, new QuestionnaireFragment.QuestionnaireFragmentListener() {
+        questionnaireFragment.newInstance(questionnaire, new QuestionnaireFragment.QuestionnaireFragmentListener() {
             @Override
             public void whenTaskReady() {
                 questionnaireFragment.startTaskViewActivity();

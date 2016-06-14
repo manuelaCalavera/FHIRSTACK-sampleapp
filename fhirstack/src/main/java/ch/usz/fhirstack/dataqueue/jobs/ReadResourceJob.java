@@ -19,7 +19,9 @@ import ch.usz.fhirstack.dataqueue.DataQueue;
  * <p/>
  * Created by manny on 07.06.2016.
  * <p/>
- *
+ * This job is used by the DataQueue to asynchronously read a resource from the FHIRServer.
+ * The Handler is used to transfer the resource to the main (UI) thread, so it could be used to
+ * update UI elements.
  */
 public class ReadResourceJob extends Job {
     private static int HANDLER_MESSAGE_BUNDLE = 0;
@@ -28,6 +30,10 @@ public class ReadResourceJob extends Job {
     private DataQueue.BundleReceiver receiver;
     private Handler dataHandler;
 
+    /**
+     * searchURL defines the search, can be absolute or relative to the FHIRServerURL, where the resource is
+     * loaded from. requestID will be passed back for identification with the result to the resourceReceiver.
+     * */
     public ReadResourceJob(final String requestID, String searchURL, DataQueue.BundleReceiver resourceReceiver, String FHIRServerURL){
         super(new Params(Priority.HIGH).requireNetwork().singleInstanceBy(requestID));
         search = searchURL;
@@ -46,6 +52,11 @@ public class ReadResourceJob extends Job {
         };
     }
 
+    /**
+     * searchURL defines the search, can be absolute or relative to the FHIRServerURL defined in
+     * the FHIRStack, where the resource is loaded from. requestID will be passed back for
+     * identification with the result to the resourceReceiver.
+     * */
     public ReadResourceJob(String requestID, String searchURL, DataQueue.BundleReceiver resourceReceiver){
         this(requestID, searchURL, resourceReceiver, FHIRStack.getDataQueue().getFHIRServerURL());
     }

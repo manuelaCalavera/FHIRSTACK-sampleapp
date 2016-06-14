@@ -7,6 +7,7 @@ import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.Type;
 import org.researchstack.backbone.answerformat.AnswerFormat;
 import org.researchstack.backbone.answerformat.BooleanAnswerFormat;
 import org.researchstack.backbone.answerformat.ChoiceAnswerFormat;

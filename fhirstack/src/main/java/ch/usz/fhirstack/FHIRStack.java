@@ -17,14 +17,12 @@ public class FHIRStack {
     private static FhirContext fhirContext;
     private static JobManager jobManager;
     private static DataQueue dataQueue;
-    private static String serverURL;
 
 
     private FHIRStack() {
     }
 
     public static void init(Context context, String FHIRServerURL) {
-        serverURL = FHIRServerURL;
         initFhirContext();
         initJobManager(context);
         initDataQueue(FHIRServerURL);
