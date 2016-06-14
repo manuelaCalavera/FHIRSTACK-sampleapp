@@ -1,5 +1,6 @@
 package sampledata;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -119,7 +120,7 @@ public class SampleData extends AppCompatActivity {
     /**
      * get the names of all the files in the raw resource folder starting with "questionnaire"
      */
-    public static String[] getAllRawResources() {
+    public static String[] getAllRawQuestionnaireResources() {
         Field fields[] = R.raw.class.getDeclaredFields();
         ArrayList<String> nameList = new ArrayList();
 
@@ -136,5 +137,19 @@ public class SampleData extends AppCompatActivity {
         }
         String[] names = nameList.toArray(new String[nameList.size()]);
         return names;
+    }
+
+    public static ArrayList<Questionnaire> getAllRawQuestionnaires(Context context){
+        ArrayList<Questionnaire> questionnaires = new ArrayList<Questionnaire>();
+        String[] rawNames = getAllRawQuestionnaireResources();
+        for (int i = 0; i<rawNames.length; i++){
+
+            int rawID = context.getResources().getIdentifier(rawNames[i],
+                    "raw", context.getPackageName());
+
+            Questionnaire questionnaire = SampleData.getQuestionnaireFromJson(context.getResources(), rawID);
+            questionnaires.add(questionnaire);
+        }
+        return questionnaires;
     }
 }

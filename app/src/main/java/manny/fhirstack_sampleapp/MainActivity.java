@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +17,7 @@ import sampledata.SampleData;
 import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 
+
 /**
  * FHIRSTACK / C3PRO_Android
  * <p/>
@@ -28,8 +28,6 @@ import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
  */
 public class MainActivity extends AppCompatActivity {
     public static final String LTAG = "FSTK";
-    // Activity Request Code used when starting a survey from launchSurvey()
-    private static final int SURVEY_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Adding an Item to the ListView for every questionnaire file in the raw resource folder
+         * this is an ugly way to provide sample data. replace with your own data!
          * */
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, SampleData.getAllRawResources());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, SampleData.getAllRawQuestionnaireResources());
         final ListView surveyListView = (ListView) findViewById(R.id.survey_list);
         surveyListView.setAdapter(adapter);
 
@@ -66,79 +65,75 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * launch a survey from a json provided in the raw folder. rawID is the resource id that can be
-     * accessed by R.raw.filename, requistID will be passed to the onActivityResult callback to
-     * identify the started survey.
+     * Launches a survey from a FHIR questionnaire. This is how to use the QuestionnaireFragment
+     * Always prepare TaskViewActivity before starting it! It will happen in the background and call
+     * back its listener when it's ready.
+     * The fragment needs a context in order to run the TaskViewActivity, that's why it has to be
+     * committed to the FragmentManager
      */
     private void launchSurvey(Questionnaire questionnaire) {
+        /**
+         * Looking up if a fragment for the given questionnaire has been created earlier. if so,
+         * the survey is started, assuming that the TaskViewActivity has been created before!!
+         * The questionnaire IDs are used for identification, assuming they are unique.
+         * */
+        QuestionnaireFragment fragment = (QuestionnaireFragment) getSupportFragmentManager().findFragmentByTag(questionnaire.getId());
+        if (fragment != null) {
+            /**
+             * If the fragment has been added before, the TaskViewActivity is started
+             * */
+            fragment.startTaskViewActivity();
+        } else {
+            /**
+             * If the fragment does not exist, we create it, add it to the fragment manager and
+             * let it prepare the TaskViewActivity
+             * */
+            final QuestionnaireFragment questionnaireFragment = new QuestionnaireFragment();
+            questionnaireFragment.newInstance(questionnaire, new QuestionnaireFragment.QuestionnaireFragmentListener() {
+                @Override
+                public void whenTaskReady() {
+                    /**
+                     * Only when the task is ready, the survey is started
+                     * */
+                    questionnaireFragment.startTaskViewActivity();
+                }
 
-        final QuestionnaireFragment questionnaireFragment = new QuestionnaireFragment();
-        questionnaireFragment.newInstance(questionnaire, new QuestionnaireFragment.QuestionnaireFragmentListener() {
-            @Override
-            public void whenTaskReady() {
-                questionnaireFragment.startTaskViewActivity();
-            }
+                @Override
+                public void whenCompleted(QuestionnaireResponse questionnaireResponse) {
+                    /**
+                     * Where the response for a completed survey is received. Here it is printed
+                     * to a TextView defined in the app layout.
+                     * */
+                    printQuestionnaireAnswers(questionnaireResponse);
+                }
 
-            @Override
-            public void whenCompleted(QuestionnaireResponse questionnaireResponse) {
-                printQuestionnaireAnswers(questionnaireResponse);
-            }
+                @Override
+                public void whenCancelledOrFailed() {
+                    /**
+                     * If the task can not be prepared, a backup plan is needed.
+                     * Here the fragment is removed from the FragmentManager so it can be created
+                     * again later
+                     * TODO: proper error handling not yet implemented
+                     * */
+                    getSupportFragmentManager().beginTransaction().remove(questionnaireFragment).commit();
+                }
+            });
 
-            @Override
-            public void whenCancelledOrFailed() {
-
-            }
-        });
-
-        getSupportFragmentManager().beginTransaction().add(questionnaireFragment, questionnaire.getId()).commit();
-
-        Log.d(LTAG, "fragment commited: "+ questionnaire.getId());
-        if (getSupportFragmentManager().getFragments() != null) {
-            Log.d(LTAG, "number of fragments: " + getSupportFragmentManager().getFragments().size());
+            /**
+             * In order for the fragment to get the context and be found later on, it has to be added
+             * to the fragment manager.
+             * */
+            getSupportFragmentManager().beginTransaction().add(questionnaireFragment, questionnaire.getId()).commit();
+            /**
+             * prepare the TaskViewActivity. As defined above, it will start the survey once the
+             * TaskViewActivity is ready.
+             * */
+            questionnaireFragment.prepareTaskViewActivity();
         }
-        questionnaireFragment.prepareTaskViewActivity();
-
-
-
-        /*
-        * This is how you launch a ViewTaskActivity from a FHIR Questionnaire
-        * The activity must be declared in the AndroidManifest!
-        *
-        Task task = Questionnaire2Task.questionnaire2Task(questionnaire);
-        Intent intent = ViewTaskActivity.newIntent(this, task);
-        startActivityForResult(intent, requestID);*/
     }
 
-
-    /*
-    * This is where you get the results back. ViewTaskActivity will return A TaskResult in the data Intent
-    * It can be read from the data or directly passed on to TaskResult2QuestionnaireResponse to get a FHIR resource from it
-    * To get the TaskResult:
-    * TaskResult taskResult = (TaskResult) data.getExtras().get(ViewTaskActivity.EXTRA_TASK_RESULT);
-    * To get the QuestionnaireResponse:
-    * QuestionnaireResponse response = TaskResult2QuestionnaireResponse.resultIntent2QuestionnaireResponse(data);
-    * or
-    * QuestionnaireResponse response = TaskResult2QuestionnaireResponse.resultIntent2QuestionnaireResponse(taskResult);
-    *
-    *
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d(LTAG, "shön blöd");
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case SURVEY_REQUEST:
-                    QuestionnaireResponse response = TaskResult2QuestionnaireResponse.resultIntent2QuestionnaireResponse(data);
-                    printQuestionnaireAnswers(response);
-                    FHIRStack.getDataQueue().create(response);
-                    break;
-            }
-        }
-    }*/
-
     /**
-     * prints the QuestionnaireResponse into the textView of the main activity under the list of questionnaires.
+     * Prints the QuestionnaireResponse into the textView of the main activity under the list of questionnaires.
      */
     private void printQuestionnaireAnswers(QuestionnaireResponse response) {
         String results = FHIRStack.getFhirContext().newJsonParser().encodeResourceToString(response);
@@ -147,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * clears the data in the textView of the main activity under the list of questionnaires
+     * Clears the data in the TextView defined in the app layout.
      */
     private void clearData() {
         AppCompatTextView resultView = (AppCompatTextView) findViewById(R.id.result_textView);

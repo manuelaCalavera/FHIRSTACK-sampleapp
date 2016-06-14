@@ -20,10 +20,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="org.researchstack.backbone.ui.ViewTaskActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Base.Theme.Backbone" />
     </application>
 
 </manifest>
