@@ -241,5 +241,5 @@ This work will be [Apache 2][apache] licensed. A NOTICE.txt file will follow at 
 [fhir]: http://hl7.org/fhir/
 [researchkit]: http://researchkit.github.io
 [i2b2]: https://www.i2b2.org
-[apache]: https://github.com/chb/c3-pro-ios-framework/blob/master/LICENSE.txt
+[apache]: http://www.apache.org/licenses/LICENSE-2.0
 [jobqueue]: https://github.com/yigit/android-priority-jobqueue
