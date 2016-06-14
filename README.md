@@ -41,7 +41,7 @@ public class FHIRStackApplication extends Application {
          * <p />
          * If you provide a context (your application) and an URL, FHIRStack
          * will create a DataQueue for you to create and read Resources from your server in a
-         * background service.
+         * background thread.
          * */
         FHIRStack.init(this, "http://fhirtest.uhn.ca/baseDstu3");
 
@@ -125,7 +125,7 @@ dependencies {
 }
 ```
 ##### The FHIRStack
-Once set up (preferably in your Application class, so it survives the Activities lifesycles), the FHIRStack will provide you with a HAPI `FhirContext` and a `DataQueue` if you have provided a FHIR Server URL.
+Once set up (preferably in your Application class, so it survives the Activities' lifesycles), the FHIRStack will provide you with a HAPI `FhirContext` and a `DataQueue` if you have provided a FHIR Server URL.
 
 You can access it anywhere in your app code, for example to get a `JsonParser`:
 ```java
