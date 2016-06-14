@@ -11,7 +11,7 @@ you can send to your server.
 For now, this project contains a library module and an app module to show how to use the library. The code is commented with 
 javadoc. A proper maven link and more instructions on how to use may follow soon.
 
-The basics:
+#####The setup
 
 In your app, create a subclass of `Application` and set it as your application in the AndroidManifest.
 It seems that for now, multidex is needed to accomodate the large number of operations in the library's dependencies. So it is necessary to enable Multidex in the application and the gradle build file.
@@ -123,6 +123,82 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile project(':fhirstack')
 }
+```
+##### The FHIRStack
+Once set up (preferably in your Application class, so it survives the Activities lifesycles), the FHIRStack will provide you with a HAPI `FhirContext` and a `DataQueue` if you have provided a FHIR Server URL.
+
+You can access it anywhere in your app code, for example to get a `JsonParser`:
+```java
+FHIRStack.getFhirContext().newJsonParser();
+```
+
+Or to upload a resource:
+```java
+FHIRStack.getDataQueue.create(resource);
+```
+##### The QuestionnaireFragment
+Use the `QuestionnaireFragment` to represent a Questionnaire and conduct a Survey based on it.
+```java
+private void launchSurvey(Questionnaire questionnaire) {
+        /**
+         * Looking up if a fragment for the given questionnaire has been created earlier. if so,
+         * the survey is started, assuming that the TaskViewActivity has been created before!!
+         * The questionnaire IDs are used for identification, assuming they are unique.
+         * */
+        QuestionnaireFragment fragment = (QuestionnaireFragment) getSupportFragmentManager().findFragmentByTag(questionnaire.getId());
+        if (fragment != null) {
+            /**
+             * If the fragment has been added before, the TaskViewActivity is started
+             * */
+            fragment.startTaskViewActivity();
+        } else {
+            /**
+             * If the fragment does not exist, we create it, add it to the fragment manager and
+             * let it prepare the TaskViewActivity
+             * */
+            final QuestionnaireFragment questionnaireFragment = new QuestionnaireFragment();
+            questionnaireFragment.newInstance(questionnaire, new QuestionnaireFragment.QuestionnaireFragmentListener() {
+                @Override
+                public void whenTaskReady() {
+                    /**
+                     * Only when the task is ready, the survey is started
+                     * */
+                    questionnaireFragment.startTaskViewActivity();
+                }
+
+                @Override
+                public void whenCompleted(QuestionnaireResponse questionnaireResponse) {
+                    /**
+                     * Where the response for a completed survey is received. Here it is printed
+                     * to a TextView defined in the app layout.
+                     * */
+                    printQuestionnaireAnswers(questionnaireResponse);
+                }
+
+                @Override
+                public void whenCancelledOrFailed() {
+                    /**
+                     * If the task can not be prepared, a backup plan is needed.
+                     * Here the fragment is removed from the FragmentManager so it can be created
+                     * again later
+                     * TODO: proper error handling not yet implemented
+                     * */
+                    getSupportFragmentManager().beginTransaction().remove(questionnaireFragment).commit();
+                }
+            });
+
+            /**
+             * In order for the fragment to get the context and be found later on, it has to be added
+             * to the fragment manager.
+             * */
+            getSupportFragmentManager().beginTransaction().add(questionnaireFragment, questionnaire.getId()).commit();
+            /**
+             * prepare the TaskViewActivity. As defined above, it will start the survey once the
+             * TaskViewActivity is ready.
+             * */
+            questionnaireFragment.prepareTaskViewActivity();
+        }
+    }
 ```
 
 #### Versions
