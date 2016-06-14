@@ -12,6 +12,7 @@ For now, this project contains a library module and an app module to show how to
 javadoc. A proper maven link and more instructions on how to use may follow soon.
 
 The basics:
+
 In your app, create a subclass of `Application` and set it as your application in the AndroidManifest.
 It seems that for now, multidex is needed to accomodate the large number of operations in the library's dependencies. So it is necessary to enable Multidex in the application and the gradle build file.
 In your Application, initialize the FHIRStack with the application's context and your FHIR Server URL. You will also need to set up the some Research Stack options. For details about that visit the [ResearchStack website][researchstack].
